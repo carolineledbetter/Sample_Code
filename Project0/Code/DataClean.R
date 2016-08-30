@@ -15,5 +15,6 @@ Project0_dental_data$attachdiff <- Project0_dental_data$attach1year -
   Project0_dental_data$attachbase
 Project0_dental_data$pddiff <- Project0_dental_data$pd1year - 
   Project0_dental_data$pdbase
+# save dataframe as r data set
 save(Project0_dental_data, 
      file = '/Users/CarolineL/Repositories/Data/Project0Data/Project0cleandata.rda')
