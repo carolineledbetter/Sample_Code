@@ -4,5 +4,6 @@ This folder contains the project materials for BIOS6623 minus datasets.  The dat
 
 For this class, the datasets can be found on CANVAS.
 
-You might also be interested in the website for [BIOS6623](https://bios6623-ucd.github.oi).
+You might also be interested in the website for [BIOS6623](https://bios6623-ucd.github.io).
 
+This is the repository of Caroline Ledbetter. To change this file, I pulled the repo and edited it locally. Also, I changed my system preferences so markdown files open with text editor instead of Xcode. I then pushed it back to github and made comments about my changes. 
