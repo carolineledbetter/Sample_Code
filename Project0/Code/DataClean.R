@@ -32,6 +32,14 @@ Project0_dental_data$attachdiff <- Project0_dental_data$attach1year -
 Project0_dental_data$pddiff <- Project0_dental_data$pd1year - 
   Project0_dental_data$pdbase
 
+#collapse non-white race groups
+Project0_dental_data$RaceColl <- Project0_dental_data$race
+levels(Project0_dental_data$RaceColl) <- list("Non-White" = c("Native American", "African American",
+                                                                "Asian"),
+                                              "White" = "White")
+#confirm
+table(Project0_dental_data$RaceColl)
+
 # save dataframe as r data set
 save(Project0_dental_data, 
      file = '/Users/CarolineL/Repositories/Data/Project0Data/Project0cleandata.rda')

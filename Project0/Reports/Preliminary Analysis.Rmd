@@ -1,0 +1,46 @@
+---
+title: "Preliminary Analysis"
+author: "Caroline Ledbetter"
+output: pdf_document
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/',
+                      echo=FALSE, warning=FALSE, message=FALSE)
+```
+
+```{r setup, include=FALSE}
+load(file = '/Users/Caroline/Repositories/Data/Project0Data/Project0cleandatanomissing.rda')
+library(pander)
+library(doBy)
+```
+```{r table1}
+TrtGroupCounts <- table(Project0_no_missing$trtgroupFactored)
+cn <- c(paste(levels(Project0_no_missing$trtgroupFactored), " (n = ", TrtGroupCounts, ")", sep = ''), 'p-value')
+rn <- c(" ", "Female", "White", "Smoker", " ", "Age", "Sites")
+returnRow <- function(col){
+  if (is.factor(Project0_no_missing[,col])){
+    n <- table(Project0_no_missing[,col],Project0_no_missing$trtgroupFactored)
+    if (length(n[n<5]) == 0){p <- chisq.test(n)$p.value}
+    else {p <- fisher.test(n)$p.value}
+    percent <- round(table(Project0_no_missing[,col],Project0_no_missing$trtgroupFactored)[2,]/table(
+      Project0_no_missing$trtgroupFactored)*100, digits = 0)
+    n_per <- paste(n[2,], "(", percent, ")", sep = '')
+    returnRow <- c(n_per, sprintf('%.2f',round(p, digits = 2)))
+  }
+  else {
+    df <- data.frame(x = Project0_no_missing[,col],trtgroup = Project0_no_missing$trtgroupFactored)
+    summ <- summaryBy(x ~ trtgroup, data = df, FUN=c(mean,sd))
+    p <- summary(aov(x~trtgroup, data=df))[[1]][5][1,]
+    m_sd <- paste(round(summ[,2],digits=0),"(",round(summ[,3],digits = 0),")",sep = '')
+    returnRow <- c(m_sd, sprintf('%.2f',round(p, digits = 2)))
+  }
+  return(returnRow)
+}
+
+Table1 <- t(data.frame(c(replicate(5,"N(%)"), ''), returnRow("sex"), returnRow("RaceColl"),
+            returnRow("smoker"), c(replicate(5,"Mean(SD)"), ''), returnRow("age"), returnRow("sites")))
+dimnames(Table1) <- list(rn,cn)
+panderOptions('table.split.table', 300)
+pander(Table1, caption = 'Table 1. Characteristics of Study Participants by Treamtment Group')
+```

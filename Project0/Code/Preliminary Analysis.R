@@ -1,8 +1,8 @@
 #load dataset
-load(file = '/Users/CarolineL/Repositories/Data/Project0Data/Project0cleandata.rda')
+load(file = '/Users/CarolineL/Repositories/Data/Project0Data/Project0cleandatanomissing.rda')
 
 #attach data set so just variable names can be used 
-attach(Project0_dental_data)
+attach(Project0_no_missing)
 
 #Linear model using attachment at 1 year
 lm1yrattach <-lm(attach1year~trtgroupFactored)
