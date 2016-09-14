@@ -6,21 +6,21 @@ attach(Project0_no_missing)
 
 #Linear model using attachment at 1 year
 lm1yrattach <-lm(attach1year~trtgroupFactored)
-summary(lm1yrattach)
+lm1yrattach_summary <- summary(lm1yrattach)
 plot(lm1yrattach)
 
 #adjust for baseline measurement
 lm1yrattach_base <- lm(attach1year~trtgroupFactored+attachbase)
-summary(lm1yrattach_base)
+lm1yrattach_base_summary <- summary(lm1yrattach_base)
 
 #Linear model using pocket depth at 1 year
-lm1yrpd<-lm(pd1year~trtgroupFactored)
-summary(lm1yrpd)
+lm1yrpd <- lm(pd1year~trtgroupFactored)
+lm1yrpd_summary <-summary(lm1yrpd)
 plot(lm1yrpd)
 
 #adjust for baseline measurement
 lm1yrpd_base <- lm(pd1year~trtgroupFactored + pdbase)
-summary(lm1yrpd_base)
+lm1yrpd_base_summary <- summary(lm1yrpd_base)
 
 #look at covariates effect on outcome
 summary(lmattachsex <- lm(attach1year~sex))
@@ -34,6 +34,3 @@ summary(lmpdsmoker <- lm(pd1year ~ smoker))
 summary(lmattachsites <- lm(attach1year ~ sites))
 summary(lmpdsites <- lm(pd1year ~ sites))
 
-#look at model that adjusts for sex (attachment), sites, and smoking status
-summary(lm1yrattach_adj <- lm(attach1year~trtgroupFactored+attachbase+sex+sites+smoker))
-summary(lm1yrpd_adj <- lm(pd1year ~ trtgroupFactored + pdbase + sites + smoker))

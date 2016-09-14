@@ -14,33 +14,33 @@ load(file = '/Users/Caroline/Repositories/Data/Project0Data/Project0cleandatanom
 library(pander)
 library(doBy)
 ```
+This is the prelimianry analysis report for the Project 0 Dental Data. This study is interested in the effect of a gel treatment on gum health as measured by attachment loss and pocket depth. Measurements for both outcomes were taken at a wide variety of sites and averaged to determine a whole mouth value. Measurements were collected a baseline before treatment began and after one-year of treatment. The study participants were randomly assigned to one of five-treatment groups -  no-treatment (no-gel), gel only (no-active ingredient/placebo), low dose, medium dose, high dose. The charactersitics of each group are shown in Table 1. To confirm random assignment, categorical variables were tested using $\chi ^2$ and Fisher's Exact and continuous variables were tested using ANOVA. p-values are shown in Table 1. 
 ```{r table1}
-TrtGroupCounts <- table(Project0_no_missing$trtgroupFactored)
-cn <- c(paste(levels(Project0_no_missing$trtgroupFactored), " (n = ", TrtGroupCounts, ")", sep = ''), 'p-value')
-rn <- c(" ", "Female", "White", "Smoker", " ", "Age", "Sites")
-returnRow <- function(col){
-  if (is.factor(Project0_no_missing[,col])){
-    n <- table(Project0_no_missing[,col],Project0_no_missing$trtgroupFactored)
-    if (length(n[n<5]) == 0){p <- chisq.test(n)$p.value}
-    else {p <- fisher.test(n)$p.value}
-    percent <- round(table(Project0_no_missing[,col],Project0_no_missing$trtgroupFactored)[2,]/table(
-      Project0_no_missing$trtgroupFactored)*100, digits = 0)
-    n_per <- paste(n[2,], "(", percent, ")", sep = '')
-    returnRow <- c(n_per, sprintf('%.2f',round(p, digits = 2)))
-  }
-  else {
-    df <- data.frame(x = Project0_no_missing[,col],trtgroup = Project0_no_missing$trtgroupFactored)
-    summ <- summaryBy(x ~ trtgroup, data = df, FUN=c(mean,sd))
-    p <- summary(aov(x~trtgroup, data=df))[[1]][5][1,]
-    m_sd <- paste(round(summ[,2],digits=0),"(",round(summ[,3],digits = 0),")",sep = '')
-    returnRow <- c(m_sd, sprintf('%.2f',round(p, digits = 2)))
-  }
-  return(returnRow)
-}
+source(file = '/Users/Caroline/Repositories/Table1/Table1.R')
+rowvars <- c(3,5:8,10,15)
+library(Hmisc)
+names(Project0_no_missing)[c(3,5,6)] <- lapply(c(3,5,6), function(i)capitalize(names(Project0_no_missing)[i]))
+names(Project0_no_missing)[c(7,8,10,15)] <- c("No of Sites", "Baseline Attachment", "Baseline Pocket Depth", "Race")
 
-Table1 <- t(data.frame(c(replicate(5,"N(%)"), ''), returnRow("sex"), returnRow("RaceColl"),
-            returnRow("smoker"), c(replicate(5,"Mean(SD)"), ''), returnRow("age"), returnRow("sites")))
-dimnames(Table1) <- list(rn,cn)
+Table_1 <- Table1(rowvars,12,Project0_no_missing)
+
 panderOptions('table.split.table', 300)
-pander(Table1, caption = 'Table 1. Characteristics of Study Participants by Treamtment Group')
+set.alignment('center', row.names = 'left')
+pander(Table_1, caption = 'Characteristics of Study Participants by Treamtment Group')
 ```
+```{r Table2 univariate analysis}
+attach(Project0_no_missing)
+lm1yrattach_summary <-summary(lm(attach1year~trtgroupFactored))
+lm1yrpd_summary <-summary(lm(pd1year~trtgroupFactored))
+pander(lm1yrattach_summary, caption = "Results of linear regression model of difference in mean attachment loss at 1-year by treatment group")
+```
+The only potential covariate with a signifiant relationship to the exposure was attachment loss at baseline. This would also be expected to effect outcome and was therefore adjusted for in the final model.
+The overall p-value for the univariate model comparing mean attachment loss at 1-year was `r round(pf(lm1yrattach_summary$fstatistic[1],lm1yrattach_summary$fstatistic[2],lm1yrattach_summary$fstatistic[3], lower.tail = F),digits = 4)`. For the univariate model comparing mean pocket depth at 1 -year was `r round(pf(lm1yrpd_summary$fstatistic[1],lm1yrpd_summary$fstatistic[2],lm1yrpd_summary$fstatistic[3], lower.tail = F), digits = 4)`. As you can see from table 2, pairwise t-test show the significant difference in attachment loss at 1-year from the no treatment group is the placebo group. 
+
+Additionaly, because attachment loss at baseline was significantly different across treatment groups, a linear regression adjusted for baseline measurements was also preformed. 
+
+``` {r table 3djusted attachment model}
+lm1yrattach_base_summary <- summary(lm(attach1year ~ trtgroupFactored + Project0_no_missing[,8]))
+pander(lm1yrattach_base_summary, caption = "Results of linear regression model of difference in mean attachment loss at 1-year by treatment group adjusted for baseline measurement")
+```
+When adjusting for baseline attachment, there was a significant difference between the medium treatment and no treatment (Table 3).
