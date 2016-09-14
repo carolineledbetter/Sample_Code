@@ -5,7 +5,7 @@ Project0_dental_data <- read.csv(
 
 #Convert intergers for categorical variables to factors for easier analysis.
 Project0_dental_data$sex <- factor(Project0_dental_data$sex)
-levels(Project0_dental_data$sex) <- c("male","female")
+levels(Project0_dental_data$sex) <- c("Male","Female")
 Project0_dental_data$race <- factor(Project0_dental_data$race)
 levels(Project0_dental_data$race) <- c("Native American", "African American",
                                        "Asian", "White")
