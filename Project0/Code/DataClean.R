@@ -42,11 +42,11 @@ table(Project0_dental_data$RaceColl)
 
 # save dataframe as r data set
 save(Project0_dental_data, 
-     file = '/Users/CarolineL/Repositories/Data/Project0Data/Project0cleandata.rda')
+     file = '/Users/Caroline/Repositories/Data/Project0Data/Project0cleandata.rda')
 
 #Create a data set with no missing data 
 Project0_no_missing <- Project0_dental_data[!is.na(Project0_dental_data$attach1year),]
 Project0_no_missing <- Project0_no_missing[!is.na(Project0_no_missing$age),]
 Project0_no_missing <- Project0_no_missing[!is.na(Project0_no_missing$smoke),]
 save(Project0_no_missing, 
-     file = '/Users/CarolineL/Repositories/Data/Project0Data/Project0cleandatanomissing.rda')
+     file = '/Users/Caroline/Repositories/Data/Project0Data/Project0cleandatanomissing.rda')
