@@ -1,0 +1,121 @@
+---
+title: "Comprehensive Analysis"
+author: "Caroline Ledbetter"
+output: pdf_document
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=3.5, fig.height=3, 
+                      echo=FALSE, warning=FALSE, message=FALSE)
+```
+
+```{r setup, include=FALSE}
+load(file = '/Users/Caroline/Repositories/Data/Project0Data/Project0cleandatanomissing.rda')
+attach(Project0_no_missing)
+library(pander)
+library(doBy)
+```
+This is the comprehensive analysis report for the Project 0 Dental Data. This study is interested in the effect of a gel treatment on gum health as measured by attachment loss and pocket depth. Measurements for both outcomes were taken at a wide variety of sites and averaged to determine a whole mouth value. Measurements were collected at baseline before treatment began and after one-year of treatment. The study participants were randomly assigned to one of five-treatment groups -  no-treatment (no-gel), gel only (no-active ingredient/placebo), low dose, medium dose, high dose. The characteristics of each group are shown in Table 1. To confirm random assignment, categorical variables were tested using $\chi ^2$ and Fisher's Exact and continuous variables were tested using ANOVA. p-values are shown in Table 1. 
+```{r table1}
+source(file = '/Users/Caroline/Repositories/Table1/Table1.R')
+rowvars <- c(3,5:8,10,15)
+library(Hmisc)
+names(Project0_no_missing)[c(3,5,6)] <- lapply(c(3,5,6), function(i)capitalize(names(Project0_no_missing)[i]))
+names(Project0_no_missing)[c(7,8,10,15)] <- c("No of Sites", "Baseline Attachment", "Baseline Pocket Depth", "Race")
+
+Table_1 <- Table1(rowvars,12,Project0_no_missing)
+panderOptions('table.split.table', Inf)
+panderOptions('table.split.cells', 20)
+set.alignment('center', row.names = 'left')
+pander(Table_1, caption = 'Characteristics of Study Participants by Treamtment Group')
+```
+
+The only potential covariate with a significant relationship to the exposure was attachment loss at baseline. This would also be expected to effect outcome and was therefore adjusted for in the final model.
+
+```{r function for p-values}
+p_value <- function(model){
+  model_summary <- summary(model)
+  p_value <- pf(model_summary$fstatistic[1],model_summary$fstatistic[2],model_summary$fstatistic[3])
+  return(p_value)
+}
+```
+
+```{r models}
+#####attachment#####
+#crude
+logattach <- log(attach1year)
+lmlogattach <- lm(logattach~trtgroupFactored)
+p_crude_attach <- p_value(lmlogattach)
+#adjusted 
+reduced_attach_final <- lm(attach1year ~ attachbase + sex +  smoker + sites)
+full_attach_final <- lm(attach1year ~ attachbase + sex +  smoker + sites + trtgroupFactored)
+adjusted_attach <- anova(reduced_attach_final, full_attach_final)
+
+####pocket depth#####
+#crude
+logpd <- log(pd1year)
+lmlogpd <- lm(logpd~trtgroupFactored)
+p_crude_pd <- p_value(lmlogpd)
+#adjusted
+reduced_pd2 <- lm(pd1year ~ pdbase + sites + smoker)
+full_pd2 <- lm(pd1year ~ pdbase + sites + smoker + trtgroupFactored) 
+adjusted_pd <- anova(reduced_pd2, full_pd2)
+
+```
+__Attachment Loss__ \newline
+Due to problems with normality and homoscedasticity, the outcome was log transformed for the crude analysis. There was a significant difference in treatment groups when looking at attachment loss (p=`r p_crude_attach`), but further analysis showed the only significant difference from no-treatment was with the placebo group (Table 2). There was no significant difference between treatment groups after adjusting for baseline, number of sites used, smoking status and gender (p=`r round(adjusted_attach[2,"Pr(>F)"],digits = 4)`).
+\newpage
+```{r Table2 crude univariate analysis}
+  rn <- levels(trtgroupFactored)
+  cn <- c("Estimate", "t value", "Pr(>|t|")
+  table_2 <- summary(lmlogattach)$coefficients[,c(1,3,4)]
+  dimnames(table_2) <- list(rn,cn)
+  pander(table_2, caption = "Crude Model of Attachment Loss")
+```
+
+__Pocket Depth__\newline
+Due to problems with normality and homoscedasticity, the outcome was log transformed for the crude analysis. There was no significant difference in treatment groups when looking at attachment loss (p=`r p_crude_pd`). There was no significant difference between treatment groups after adjusting for baseline, number of sites used, and smoking status (p=`r round(adjusted_pd[2,"Pr(>F)"],digits = 4)`).
+
+__Appendix: Diagnostic Plots__\newline
+```{r plot setup}
+library(car)
+#fxn for histogram of studentized residuals
+hist_resid <- function(lm){
+  require(MASS)
+  sresid <- studres(lm) 
+  hist(sresid, freq=FALSE, main = "Histogram of Residuals", xlab = 'Residuals')
+  xfit<-seq(min(sresid),max(sresid),length=40) 
+  yfit<-dnorm(xfit) 
+  lines(xfit, yfit)
+}
+```
+
+$\textit{Diagnostic Plots of Attachment Loss vs Treatment Group}$\newline
+\newline
+```{r linear attach plots}
+lm1yrattach <-lm(attach1year~trtgroupFactored)
+qqPlot(lm1yrattach, main = "QQ Plot", ylab = 'Studentized Residuals')
+hist_resid(lm1yrattach)
+```
+
+$\textit{Diagnostic Plots of Log Transformed Attachment Loss vs Treatment Group}$\newline
+\newline
+```{r log attach plots}
+qqPlot(lmlogattach, main = "QQ Plot", ylab = 'Studentized Residuals') 
+hist_resid(lmlogattach)
+```
+
+$\textit{Diagnostic Plots of Pocket Depth vs Treatment Group}$\newline
+\newline
+```{r linear pocket depth plots}
+lm1yrpd <- lm(pd1year~trtgroupFactored)
+qqPlot(lm1yrpd, main = "QQ Plot", ylab = 'Studentized Residuals')
+hist_resid(lm1yrpd)
+```
+
+$\textit{Diagnostic Plots of Log Transformed Pocket Depth vs Treatment Group}$\newline
+\newline
+```{r log pocket depth plots}
+qqPlot(lmlogpd, main = "QQ Plot", ylab = 'Studentized Residuals') 
+hist_resid(lmlogpd)
+```

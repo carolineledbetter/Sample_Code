@@ -1,5 +1,5 @@
 #load dataset
-load(file = '/Users/CarolineL/Repositories/Data/Project0Data/Project0cleandatanomissing.rda')
+load(file = '/Users/Caroline/Repositories/Data/Project0Data/Project0cleandatanomissing.rda')
 
 #attach data set so just variable names can be used 
 attach(Project0_no_missing)
@@ -52,14 +52,18 @@ lm1yrpd_base_summary <- summary(lm1yrpd_base)
 plot(lm1yrpd_base)
 
 #look at covariates effect on outcome
-summary(lmattachsex <- lm(attach1year~sex))
+summary(lmattachsex <- lm(logattach~sex))#p-value:0.04242
+qqPlot(lmattachsex)
+hist_resid(lmattachsex)
+
+summary(lmattachrace <- lm(logattach ~ RaceColl))#p-value:0.9975
+summary(lmattachage <- lm(logattach ~ age))#p-value: 0.3013
+summary(lmattachsmoker <- lm(logattach ~ smoker))#p-value:0.08167
+summary(lmattachsites <- lm(attach1year ~ sites))#p-value: 2.76e-05
+
 summary(lmpdsex <- lm(pd1year~sex))
-summary(lmattachrace <- lm(attach1year ~ race))
 summary(lmpdrace <- lm(pd1year ~ race))
-summary(lmattachage <- lm(attach1year ~ age))
 summary(lmpdage <- lm(pd1year ~ age))
-summary(lmattachsmoker <- lm(attach1year ~ smoker))
 summary(lmpdsmoker <- lm(pd1year ~ smoker))
-summary(lmattachsites <- lm(attach1year ~ sites))
 summary(lmpdsites <- lm(pd1year ~ sites))
 
