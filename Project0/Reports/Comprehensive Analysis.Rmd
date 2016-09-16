@@ -63,7 +63,7 @@ adjusted_pd <- anova(reduced_pd2, full_pd2)
 
 ```
 __Attachment Loss__ \newline
-Due to problems with normality and homoscedasticity, the outcome was log transformed for the crude analysis. There was a significant difference in treatment groups when looking at attachment loss (p=`r p_crude_attach`), but further analysis showed the only significant difference from no-treatment was with the placebo group (Table 2). There was no significant difference between treatment groups after adjusting for baseline, number of sites used, smoking status and gender (p=`r round(adjusted_attach[2,"Pr(>F)"],digits = 4)`).
+Due to problems with normality and homoscedasticity, the outcome was log transformed for the crude analysis. There was a significant difference in treatment groups when looking at attachment loss (p=`r round(p_crude_attach, digits = 4)`), but further analysis showed the only significant difference from no-treatment was with the placebo group (Table 2). There was no significant difference between treatment groups after adjusting for baseline, number of sites used, smoking status and gender (p=`r round(adjusted_attach[2,"Pr(>F)"],digits = 4)`).
 \newpage
 ```{r Table2 crude univariate analysis}
   rn <- levels(trtgroupFactored)
@@ -74,7 +74,7 @@ Due to problems with normality and homoscedasticity, the outcome was log transfo
 ```
 
 __Pocket Depth__\newline
-Due to problems with normality and homoscedasticity, the outcome was log transformed for the crude analysis. There was no significant difference in treatment groups when looking at attachment loss (p=`r p_crude_pd`). There was no significant difference between treatment groups after adjusting for baseline, number of sites used, and smoking status (p=`r round(adjusted_pd[2,"Pr(>F)"],digits = 4)`).
+Due to problems with normality and homoscedasticity, the outcome was log transformed for the crude analysis. There was no significant difference in treatment groups when looking at attachment loss (p=`r round(p_crude_pd, digits = 4)`). There was no significant difference between treatment groups after adjusting for baseline, number of sites used, and smoking status (p=`r round(adjusted_pd[2,"Pr(>F)"],digits = 4)`).
 
 __Appendix: Diagnostic Plots__\newline
 ```{r plot setup}
