@@ -66,7 +66,7 @@ __Attachment Loss__ \newline
 Due to problems with normality and homoscedasticity, the outcome was log transformed for the crude analysis. There was a significant difference in treatment groups when looking at attachment loss (p=`r round(p_crude_attach, digits = 4)`), but further analysis showed the only significant difference from no-treatment was with the placebo group (Table 2). There was no significant difference between treatment groups after adjusting for baseline, number of sites used, smoking status and gender (p=`r round(adjusted_attach[2,"Pr(>F)"],digits = 4)`).
 \newpage
 ```{r Table2 crude univariate analysis}
-  rn <- levels(trtgroupFactored)
+  rn <- c("Intercept", levels(trtgroupFactored)[-1])
   cn <- c("Estimate", "t value", "Pr(>|t|")
   table_2 <- summary(lmlogattach)$coefficients[,c(1,3,4)]
   dimnames(table_2) <- list(rn,cn)
