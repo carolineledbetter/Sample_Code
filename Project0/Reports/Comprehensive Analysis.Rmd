@@ -15,7 +15,7 @@ attach(Project0_no_missing)
 library(pander)
 library(doBy)
 ```
-This is the comprehensive analysis report for the Project 0 Dental Data. This study is interested in the effect of a gel treatment on gum health as measured by attachment loss and pocket depth. Measurements for both outcomes were taken at a wide variety of sites and averaged to determine a whole mouth value. Measurements were collected at baseline before treatment began and after one-year of treatment. The study participants were randomly assigned to one of five-treatment groups -  no-treatment (no-gel), gel only (no-active ingredient/placebo), low dose, medium dose, high dose. The characteristics of each group are shown in Table 1. To confirm random assignment, categorical variables were tested using $\chi ^2$ and Fisher's Exact and continuous variables were tested using ANOVA. p-values are shown in Table 1. 
+This is the comprehensive analysis report for the Project 0 Dental Data. This study is interested in the effect of a gel treatment on gum health as measured by attachment loss and pocket depth. Measurements for both outcomes were taken at a wide variety of sites and averaged to determine a whole mouth value. Measurements were collected at baseline before treatment began and after one-year of treatment. The study participants were randomly assigned to one of five-treatment groups -  no-treatment (no-gel), gel only (no-active ingredient/placebo), low dose, medium dose, high dose. Race characteristics were collapsed into white and non-white due to the small sizes of the non-white race groups.  The characteristics of each group are shown in Table 1. To confirm random assignment, categorical variables were tested using $\chi ^2$ and Fisher's Exact and continuous variables were tested using ANOVA. p-values are shown in Table 1. 
 ```{r table1}
 source(file = '/Users/Caroline/Repositories/Table1/Table1.R')
 rowvars <- c(3,5:8,10,15)
@@ -35,7 +35,7 @@ The only potential covariate with a significant relationship to the exposure was
 ```{r function for p-values}
 p_value <- function(model){
   model_summary <- summary(model)
-  p_value <- pf(model_summary$fstatistic[1],model_summary$fstatistic[2],model_summary$fstatistic[3])
+  p_value <- pf(model_summary$fstatistic[1],model_summary$fstatistic[2],model_summary$fstatistic[3],lower.tail = F)
   return(p_value)
 }
 ```
@@ -76,6 +76,17 @@ Due to problems with normality and homoscedasticity, the outcome was log transfo
 __Pocket Depth__\newline
 Due to problems with normality and homoscedasticity, the outcome was log transformed for the crude analysis. There was no significant difference in treatment groups when looking at attachment loss (p=`r round(p_crude_pd, digits = 4)`). There was no significant difference between treatment groups after adjusting for baseline, number of sites used, and smoking status (p=`r round(adjusted_pd[2,"Pr(>F)"],digits = 4)`).
 
+```{r missing data}
+load(file = '/Users/Caroline/Repositories/Data/Project0Data/Project0cleandata.rda')
+Missing <- sapply(Project0_dental_data[c(-11,-13,-14)], function(x) sum(is.na(x)))
+```
+__Appendix: Missing Data__\newline
+`r sum(Missing[Missing>0])` observations were excluded due to missing data.
+```{r missing table}
+pander(summaryBy(attach1year + pd1year + age + smoker~ trtgroup, data = Project0_dental_data,
+          FUN=function(x)sum(is.na(x)),keep.names = TRUE), caption = "Number of Missing Values by Treatment Group")
+```
+
 __Appendix: Diagnostic Plots__\newline
 ```{r plot setup}
 library(car)
@@ -90,30 +101,30 @@ hist_resid <- function(lm){
 }
 ```
 
-$\textit{Diagnostic Plots of Attachment Loss vs Treatment Group}$\newline
+$\underline{\textbf{Diagnostic Plots of Attachment Loss vs Treatment Group}}$\newline
 \newline
 ```{r linear attach plots}
 lm1yrattach <-lm(attach1year~trtgroupFactored)
 qqPlot(lm1yrattach, main = "QQ Plot", ylab = 'Studentized Residuals')
 hist_resid(lm1yrattach)
 ```
-
-$\textit{Diagnostic Plots of Log Transformed Attachment Loss vs Treatment Group}$\newline
+\newpage
+$\underline{\textbf{Diagnostic Plots of Log Transformed Attachment Loss vs Treatment Group}}$\newline
 \newline
 ```{r log attach plots}
 qqPlot(lmlogattach, main = "QQ Plot", ylab = 'Studentized Residuals') 
 hist_resid(lmlogattach)
 ```
-
-$\textit{Diagnostic Plots of Pocket Depth vs Treatment Group}$\newline
+\newline
+$\underline{\textbf{Diagnostic Plots of Pocket Depth vs Treatment Group}}$\newline
 \newline
 ```{r linear pocket depth plots}
 lm1yrpd <- lm(pd1year~trtgroupFactored)
 qqPlot(lm1yrpd, main = "QQ Plot", ylab = 'Studentized Residuals')
 hist_resid(lm1yrpd)
 ```
-
-$\textit{Diagnostic Plots of Log Transformed Pocket Depth vs Treatment Group}$\newline
+\newline
+$\underline{\textbf{Diagnostic Plots of Log Transformed Pocket Depth vs Treatment Group}}$\newline
 \newline
 ```{r log pocket depth plots}
 qqPlot(lmlogpd, main = "QQ Plot", ylab = 'Studentized Residuals') 
