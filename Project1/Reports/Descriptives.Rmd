@@ -1,0 +1,28 @@
+---
+title: "Descriptives"
+author: "Caroline Ledbetter"
+output: pdf_document
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=3.5, fig.height=3, 
+                      echo=FALSE, warning=FALSE, message=FALSE)
+```
+```{r setup, include=FALSE}
+load(file = "~/Repositories/bios6623-ledbettc/Project1/Descriptives.RData")
+library(pander)
+```
+
+There were `r length(camp_teach$id) ` observations for `r length(ids)` unique subjects. The number of observations for each subject ranged from `r min(ids_obs$obs)` to `r max(ids_obs$obs)` with an average of `r sprintf('%.2f',mean(ids_obs$obs))` observations (Fig 1). Charachteristics for study participants are given in Table 1. To confirm random assignment, categorical variables were tested using $\chi ^2$ and continuous variables were tested using ANOVA. p-values are shown in Table 1.
+
+```{r table one}
+panderOptions('table.split.table', Inf)
+set.alignment('center', row.names = 'left')
+pander(Table_1, caption = 'Characteristics of Study Participants by Treamtment Group')
+```
+
+```{r hist of obs}
+hist(ids_obs$obs, freq = TRUE, plot = TRUE, xlab= "Number of Observations per Subject", col = "blue",
+     main='Frequency of Observations
+     per Subject', breaks = c((min(ids_obs$obs - 0.5)):(max(ids_obs$obs + 0.5))), xlim = c(0,20), cex.main = 1, cex.lab = 0.75)
+```
