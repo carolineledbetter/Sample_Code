@@ -33,3 +33,8 @@ Table_1 <- Table1(c(4:6),1, data = desc)
 #save workspace for use in .rmd
 save.image("~/Repositories/bios6623-ledbettc/Project1/Descriptives.RData")
 
+#look at how manys obs at each outcome
+hist(visitc, freq = TRUE, plot = TRUE, xlab= 
+       "Months from Initial Measurement", col = "blue",
+     main='Number of Id with observations
+at each time period', cex.main = 1, cex.lab = 0.75)

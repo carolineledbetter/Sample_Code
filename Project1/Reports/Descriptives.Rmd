@@ -26,3 +26,10 @@ hist(ids_obs$obs, freq = TRUE, plot = TRUE, xlab= "Number of Observations per Su
      main='Frequency of Observations
      per Subject', breaks = c((min(ids_obs$obs - 0.5)):(max(ids_obs$obs + 0.5))), xlim = c(0,20), cex.main = 1, cex.lab = 0.75)
 ```
+
+```{r hist of times}
+hist(camp_teach$visitc, freq = TRUE, plot = TRUE, xlab= 
+       "Months from Initial Measurement", col = "blue",
+     main='Number of Ids with observations
+at each time period', cex.main = 1, cex.lab = 0.75)
+```
