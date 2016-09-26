@@ -38,3 +38,7 @@ hist(visitc, freq = TRUE, plot = TRUE, xlab=
        "Months from Initial Measurement", col = "blue",
      main='Number of Id with observations
 at each time period', cex.main = 1, cex.lab = 0.75)
+
+#look at age of homes data;
+hist(agehome, freq = TRUE, plot = TRUE, xlab= 
+       "Age of Home in Years", col = "blue", cex.main = 1, cex.lab = 0.75)
