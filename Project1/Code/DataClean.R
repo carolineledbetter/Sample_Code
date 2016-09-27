@@ -14,7 +14,7 @@ save(camp_teach, file = '/Users/Caroline/Repositories/Data/Project1Data/camp_tea
 
 #########create dataset for analysis#######
 
-#create dataset from only observation in the first 60 mos. 
+#create dataset from only observation in the first 60 mos. Only select constant demographic variables, PREFEV and visitc.
 analysis <- camp_teach[camp_teach$visitc <= 60,c(1:6,8,27)]
 
 #select last observations of each id
