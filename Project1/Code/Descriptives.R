@@ -42,3 +42,15 @@ at each time period', cex.main = 1, cex.lab = 0.75)
 #look at age of homes data;
 hist(agehome, freq = TRUE, plot = TRUE, xlab= 
        "Age of Home in Years", col = "blue", cex.main = 1, cex.lab = 0.75)
+
+######add descriptives for analysis dataset#######
+load(file = '/Users/Caroline/Repositories/Data/Project1Data/analysis_ds.rda')
+#change names for demographics for clarity/prettiness and expand factors
+names(analysis)[c(4:6,10:15)] <- c("Age at Enrollment", "Gender", "Ethnicity", "House >= 50", "House >= 100", "Pets", "Woodstove", 
+                                   "Parents Smoke", "Anyone Smokes")
+levels(analysis$Gender) <- c("Female", "Male")
+levels(analysis$Ethnicity) <- c("Black", "Hispanic", "Other", "Non-Hispanic White")
+source("/Users/Caroline/Repositories/Table1/Table1.r")
+Table_1_analysis <- Table1(c(4:6,10:15),1, data = analysis)
+#save analysis descriptives workspace for use with .rmd
+save.image("~/Repositories/bios6623-ledbettc/Project1/AnalysisDescriptives.RData")
