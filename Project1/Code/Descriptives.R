@@ -51,6 +51,14 @@ names(analysis)[c(4:6,10:15)] <- c("Age at Enrollment", "Gender", "Ethnicity", "
 levels(analysis$Gender) <- c("Female", "Male")
 levels(analysis$Ethnicity) <- c("Black", "Hispanic", "Other", "Non-Hispanic White")
 source("/Users/Caroline/Repositories/Table1/Table1.r")
-Table_1_analysis <- Table1(c(4:6,10:15),1, data = analysis)
+Table_1_analysis <- Table1(c(4:6,10:15),1, data = analysis) #treatment groups are well balanced, only siginificant difference is gender
+
+
+boxplot(analysis$PREFEV ~ analysis$TX)
+boxplot(analysis$PREFEV ~ analysis$TG)
+plot(analysis$PREFEV, analysis$baselineFEV)
+boxplot(analysis$PREFEV ~ analysis$`Age at Enrollment`)
+boxplot(analysis$PREFEV ~ analysis$Gender)
+
 #save analysis descriptives workspace for use with .rmd
 save.image("~/Repositories/bios6623-ledbettc/Project1/AnalysisDescriptives.RData")
