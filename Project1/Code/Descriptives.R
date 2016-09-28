@@ -51,7 +51,7 @@ names(analysis)[c(4:6,10:15)] <- c("Age at Enrollment", "Gender", "Ethnicity", "
 levels(analysis$Gender) <- c("Female", "Male")
 levels(analysis$Ethnicity) <- c("Black", "Hispanic", "Other", "Non-Hispanic White")
 source("/Users/Caroline/Repositories/Table1/Table1.r")
-Table_1_analysis <- Table1(c(4:6,10:15),1, data = analysis) #treatment groups are well balanced, only siginificant difference is gender
+Table_1_analysis <- Table1(c(4:6,8,10:15),1, data = analysis) #treatment groups are well balanced, only siginificant difference is gender
 
 
 boxplot(analysis$PREFEV ~ analysis$TX)

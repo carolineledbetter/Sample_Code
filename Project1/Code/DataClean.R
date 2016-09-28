@@ -14,8 +14,8 @@ save(camp_teach, file = '/Users/Caroline/Repositories/Data/Project1Data/camp_tea
 
 #########create dataset for analysis#######
 
-#create dataset from only observation in the first 60 mos. Only select constant demographic variables, PREFEV and visitc.
-analysis <- camp_teach[camp_teach$visitc <= 60,c(1:6,8,27)]
+#create dataset from only observation in the first 72 mos. Only select constant demographic variables, PREFEV and visitc.
+analysis <- camp_teach[camp_teach$visitc <= 72,c(1:6,8,27)]
 
 #select last observations of each id
 library(plyr)
@@ -27,7 +27,7 @@ analysis <- cbind.data.frame(analysis, baselineFEV = camp_teach[camp_teach$visit
 #check
 table(analysis$visitc) #there are numerous observations with only a few visits
 #remove ids with less than 4 years of follow up
-analysis <- analysis[analysis$visitc >= 48, ] #36 observations removed
+analysis <- analysis[analysis$visitc >= 48, ] #35 observations removed
 
 ###add additional variables###
 #setup variables for have they ever lived in a house older than 50 and 100 years
