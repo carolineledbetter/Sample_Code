@@ -14,20 +14,32 @@ save(camp_teach, file = '/Users/Caroline/Repositories/Data/Project1Data/camp_tea
 
 #########create dataset for analysis#######
 
-#create dataset from only observations in the first 72 mos. Only select constant demographic variables, PREFEV and visitc.
-analysis <- camp_teach[camp_teach$visitc <= 72,c(1:6,8,27)]
+#create dataset from only observations in the first 72 mos and where there is an PREFEV measurement.
+#Only select constant demographic variables, PREFEV and visitc.
+analysis <- camp_teach[which(!is.na(camp_teach$PREFEV)),c(1:6,8,27)]
+analysis <- analysis[analysis$visitc <= 72,]
 
 #select last observations of each id
 library(plyr)
 analysis <- ddply(analysis, .(id), function(x) x[which.max(x$visitc),])
 
 #add baseline measurements 
-analysis <- cbind.data.frame(analysis, baselineFEV = camp_teach[camp_teach$visitc == 0, 8])
+analysis <- merge(analysis, camp_teach[camp_teach$visitc == 0, c('id','PREFEV')], by = "id")
+names(analysis)[c(7,9)] <- c("PREFEV", "baselineFEV")
 
-#check
-table(analysis$visitc) #there are numerous observations with only a few visits
+#check for month of follow up
+table(analysis$visitc) #there are numerous observations with less than 4 years
 #remove ids with less than 4 years of follow up
 analysis <- analysis[analysis$visitc >= 48, ] #35 observations removed
+#check
+table(analysis$visitc)#all good
+
+
+#check for missing baseline measurements
+which(is.na(analysis$baselineFEV))#id = 228 is missing.
+#remove
+analysis <- analysis[which(!is.na(analysis$baselineFEV)),]
+
 
 ###add additional variables###
 #restrict dataset to only first 72 months.
