@@ -1,0 +1,72 @@
+---
+title: "Final Report - Project 1"
+author: "Caroline Ledbetter"
+output:
+  pdf_document:
+    fig_caption: yes
+    fig_height: 3
+    fig_width: 3.5
+  word_document: default
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+```
+
+```{r setup, include=FALSE}
+load(file = "~/Repositories/bios6623-ledbettc/Project1/AnalysisDescriptives.RData")
+load(file = "~/Repositories/bios6623-ledbettc/Project1/Analysis.RData")
+library(pander)
+```
+#Introduction  
+##Study design
+The data for this project come from the Childhood Asthma Management Program (CAMP), a clinical trial carried out in children with asthma. The trial was designed to determine the long-term effects of 3 treatments (budesonide, nedocromil, or placebo) on pulmonary function as measured by normalized FEV1 over a 5-6.5 year period. The design of CAMP was a multicenter, masked, placebo-controlled, randomized trial. A total of 695 children (210 in the budesonide group, 210 in the nedocromil group and 275 in the placebo group) aged 5-12 years were enrolled between December of 1993 and September of 1995. The primary outcome of the trial was lung function as measured by the Forced Expiratory Volume at 1 second (FEV1).
+
+##Research Question  
+The primary research question is whether or not children who use budesonide or nedocromil have better lung function as measured by FEV1. The primary hypothesis is that children who use budesonide or nedocromil have a significant better FEV1 at alpha = 0.05.  
+The seconday reseach question is whether or not treatment is less effective in children whose parent smoke. The seconday hypothesis is that interaction between treatment group and whether or not a parent smoked in the home is not zero at alpha = 0.05. 
+
+#Methods
+##Data
+This data set contained multiple observations for each subject ranging in number from `r min(ids_obs$obs)` to `r max(ids_obs$obs)` with an average of `r sprintf('%.2f',mean(ids_obs$obs))` observations (Fig 1). 
+
+```{r hist of obs, fig.cap = "Observations per Subject", fig.pos='!ht'}
+hist(ids_obs$obs, freq = TRUE, plot = TRUE, xlab= "Number of Observations per Subject", col = "blue",
+     main = NULL, breaks = c((min(ids_obs$obs - 0.5)):(max(ids_obs$obs + 0.5))), xlim = c(0,20), cex.main = 1, cex.lab = 0.75)
+```
+
+Follow up visits ranged from `r min(camp_teach$visitc)` to `r max(camp_teach$visitc)` months (Fig 2). Since the primary research question was interesed in improvement after 6 years, all observations after 72 months were excluded. The last observation with a pre-bronchodilator FEV measurement was then used for analysis of the outcome. A baseline FEV measurement was obtained from the visit at 0 months of follow up. Subjects with no baseline or who only had a baseline observation were excluded. `r length(camp_teach$id) - length(analysis$id)` subjects were excluded.  
+Information on age of the home, pets, woodstoves, dehumidifiers and smokers was not collected at every visit and had the potential to change over the course of the study, therefore whether or not the child ever reported the exposure during the first 6 years of follow-up was determined. Subjects who had no information (all missing values) on a variable over the 72 months were treated as missing, otherwise any subject who ever reported that exposure was a yes. Age of home was broken into two categorical variables by whether or not the child ever reported living in a home older than 50 years, and older than 100 years.  
+
+```{r hist of followup time, fig.cap = "No. of Ids with observations at each time period"}
+hist(camp_teach$visitc, freq = TRUE, plot = TRUE, breaks = seq(0,max(camp_teach$visitc),4),
+     xlab = "Months from Initial Measurement", col = "blue",
+     main = NULL, cex.main = 1, cex.lab = 0.75)
+```
+
+##Analysis
+Linear regression was used for all models and analyis. For the primary research question a crude model with only the outcome and exposure(treatment group) was analyzed. An adjusted model that included baseline FEV and covariates that were significantly different across treatment groups was also evaluated. A partial F test that compared the full adjusted model to a reduced model that did not include treatment groups was used to determine if there was a significant difference in treatment groups after adjusting for covariates.  
+For the secondary research question a partial F test was used to determine if the interaction between the treatment group and whether a parent had ever smoked was not zero. The full model included treatment group, whether a parent ever smoked and the interaction term. The reduced model was the full model minus the interaction term. 
+
+#Results
+Most charactersitics of study participants were well distributed across treatment groups, with exception of gender which was found to significantly vary. (Table 1)
+
+```{r table1}
+panderOptions('table.split.table', Inf)
+set.alignment('center', row.names = 'left')
+pander(Table_1_analysis, caption = "Charactersitcs of Study Participants by Treatment Group")
+```
+
+```{r function for p-values, include=FALSE}
+p_value <- function(model){
+  model_summary <- summary(model)
+  p_value <- pf(model_summary$fstatistic[1],model_summary$fstatistic[2],model_summary$fstatistic[3],lower.tail = F)
+  return(p_value)
+}
+```
+There was no significant difference in FEV measurements across treatment groups (p=`r sprintf("%.4f", p_value(unadj_lm))`) even after adjusting for baseline measureements and gender (p=`r sprintf("%.4f", adj_lm_gender[2,6])`).  
+The interaction between treatment group and whether the parent ever smoked in the home was not significant (p=`r sprintf("%.4f", secondary[2,6])`)).
+ 
+
+
+

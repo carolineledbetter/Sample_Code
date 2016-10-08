@@ -46,10 +46,11 @@ hist(agehome, freq = TRUE, plot = TRUE, xlab=
 ######add descriptives for analysis dataset#######
 load(file = '/Users/Caroline/Repositories/Data/Project1Data/analysis_ds.rda')
 #change names for demographics for clarity/prettiness and expand factors
-names(analysis)[c(4:6,9:16)] <- c("Age at Enrollment", "Gender", "Ethnicity", "Baseline FEV", "House >= 50", "House >= 100", "Pets", "Woodstove", 
+names(analysis)[c(4:6,8:16)] <- c("Age at Enrollment", "Gender", "Ethnicity", "Months of Followup", "Baseline FEV", "House >= 50", "House >= 100", "Pets", "Woodstove", 
                                   "Dehumidifier", "Parents Smoke", "Anyone Smokes")
 levels(analysis$Gender) <- c("Female", "Male")
 levels(analysis$Ethnicity) <- c("Black", "Hispanic", "Other", "Non-Hispanic White")
+levels(analysis$TG) <- c("Budesonide", "Nedocromil","Placebo")
 source("/Users/Caroline/Repositories/Table1/Table1.r")
 Table_1_analysis <- Table1(c(4:6,9:16,8),'TG', data = analysis) #treatment groups are well balanced, only siginificant difference is gender
 

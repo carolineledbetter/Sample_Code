@@ -43,14 +43,15 @@ anova(reducedModel,adj_lm)
 
 #adjust for other variables that differed across treatment group (from Table 1)
 #only gender
-summary(adj_lm_gender <- lm(analysis$PREFEV ~ analysis$TG_ref + analysis$baselineFEV + analysis$GENDER))
-diag_plots (adj_lm_gender)
+summary(full_lm_gender <- lm(analysis$PREFEV ~ analysis$TG_ref + analysis$baselineFEV + analysis$GENDER))
+diag_plots (full_lm_gender)
 
 #look at whether there is a different across treatment groups when adjusting for baseline and gender
 #using partial f test
 reducedModel_gender <- lm(analysis$PREFEV ~ analysis$baselineFEV + analysis$GENDER)
-anova(reducedModel_gender,adj_lm)
-#p-value 0.4551 - no significant difference
+adj_lm_gender <- anova(reducedModel_gender,full_lm_gender)
+adj_lm_gender
+#p-value 0.6322 - no significant difference
 
 ######sencondary question
 #look at interaction of treatment and parent smoking
@@ -62,7 +63,8 @@ diag_plots(secondary_full)
 
 #determine if interaction term is significant using partial f test
 reducedSecondary <- lm(analysis$PREFEV ~ analysis$TG_ref + analysis$everparent)
-anova(reducedSecondary, secondary_full)
+secondary <- anova(reducedSecondary, secondary_full)
+secondary
 #p-value is 0.8133 the interaction term is not significant
 
 ######save workspace for use in final report rmd#####
