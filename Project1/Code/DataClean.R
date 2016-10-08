@@ -13,6 +13,7 @@ lapply(c("anypet", "woodstove", "parent_smokes", "any_smokes"), function(i){
 save(camp_teach, file = '/Users/Caroline/Repositories/Data/Project1Data/camp_teach.rda')
 
 #########create dataset for analysis#######
+load('/Users/Caroline/Repositories/Data/Project1Data/camp_teach.rda')
 
 #create dataset from only observations in the first 72 mos and where there is an PREFEV measurement.
 #Only select constant demographic variables, PREFEV and visitc.
@@ -29,8 +30,14 @@ names(analysis)[c(7,9)] <- c("PREFEV", "baselineFEV")
 
 #check for month of follow up
 table(analysis$visitc) #there are numerous observations with less than 4 years
-#remove ids with less than 4 years of follow up
-analysis <- analysis[analysis$visitc >= 48, ] #35 observations removed
+
+#####tasha said to leave in observations with less than 4 years - 10/8/16##### 
+# #remove ids with less than 4 years of follow up
+# analysis <- analysis[analysis$visitc >= 48, ] #35 observations removed
+# #check
+# table(analysis$visitc)#all good
+####still need to remove those with only baseline
+analysis <- analysis[analysis$visitc > 0, ] #3 observations removed
 #check
 table(analysis$visitc)#all good
 
@@ -75,6 +82,13 @@ invisible(lapply(10:15, function(i){
 
 #confirm treatment groups and treatment are aligned (correct)
 table(analysis$TX,analysis$TG)#confirmed
+
+#reorder TG so placebo group is reference
+analysis$TG_ref <- relevel(analysis$TG, 'C')
+#confirm 
+table(analysis$TG_ref, analysis$TG)#allgoof
+#relabel for clarity
+levels(analysis$TG_ref) <- c("Placebo", "Budesonide", "Nedocromil")
 
 ############save analysis dataset##############
 save(analysis, file = '/Users/Caroline/Repositories/Data/Project1Data/analysis_ds.rda')
