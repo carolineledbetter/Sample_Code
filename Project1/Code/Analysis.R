@@ -60,5 +60,10 @@ summary(secondary_full <- lm(analysis$PREFEV ~ analysis$TG_ref + analysis$everpa
 diag_plots(secondary_full)
 #p-value - 0.961 diagplots look good.
 
+#determine if interaction term is significant using partial f test
+reducedSecondary <- lm(analysis$PREFEV ~ analysis$TG_ref + analysis$everparent)
+anova(reducedSecondary, secondary_full)
+#p-value is 0.8133 the interaction term is not significant
+
 ######save workspace for use in final report rmd#####
 save.image("~/Repositories/bios6623-ledbettc/Project1/Analysis.RData")
