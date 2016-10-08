@@ -65,18 +65,23 @@ analysis[,10:11] <- t(sapply(analysis$id, function(i) {
 }))
 names(analysis)[10:11] <- c("Ever50","Ever100")
 
-#add variables for everpet, everwoodstove, everparent, everanysmokes.
-analysis[,c(12:15)] <- sapply(c(22,23,25,26),function(x){sapply(analysis$id, function(i) {
+#recode Don't Know for Dehumidifier as missing information
+camp$dehumid[camp$dehumid == 'DK'] <- NaN
+#remove DK level
+camp$dehumid <- (droplevels(camp$dehumid))
+
+#add variables for everpet, everwoodstove, everdehumid, everparent, everanysmokes.
+analysis[,c(12:16)] <- sapply(c(22:26),function(x){sapply(analysis$id, function(i) {
   if (length(which(!is.na(camp[camp$id == i, x]))) == 0) return(NaN)
   else {
     if (length(which(camp[camp$id == i, x] == 'Yes')) == 0) return("No")
     else return("Yes")
   }
 })})
-names(analysis)[12:15] <- c("everpet", "everwoodstove", "everparent", "everanysmokes")
+names(analysis)[12:16] <- c("everpet", "everwoodstove", "everdehumid", "everparent", "everanysmokes")
 
 #factor new variables
-invisible(lapply(10:15, function(i){
+invisible(lapply(10:16, function(i){
   analysis[,i] <<- factor(analysis[,i], exclude = NaN)
 }))
 
