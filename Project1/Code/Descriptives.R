@@ -63,3 +63,7 @@ boxplot(analysis$PREFEV ~ analysis$Gender)
 #save analysis descriptives workspace for use with .rmd
 save.image("~/Repositories/bios6623-ledbettc/Project1/AnalysisDescriptives.RData")
 
+#i've largely ignored fdays - look at it
+range(camp_teach$fdays, na.rm = T)
+plot(camp_teach$fdays, camp_teach$visitc)
+#looks like it just the exact number of days into the study as opposed to a month. 
