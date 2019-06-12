@@ -28,9 +28,8 @@ summary(unadj_lm <- lm(analysis$PREFEV ~ analysis$TG_ref))
 #diagnostics
 diag_plots(unadj_lm)#they look good
 
-#adjust for baseline
-summary(adj_lm <- lm(analysis$PREFEV ~ analysis$TG_ref + analysis$baselineFEV))
-#p-value is <2.2e-16 
+#adj for for baseline FEV, age, and gender
+summary(full_lm <- lm(analysis$PREFEV ~ analysis$TG_ref + analysis$baselineFEV + analysis$GENDER + analysis$age_rz))
 
 #diagnostics
 diag_plots(adj_lm)#look good
